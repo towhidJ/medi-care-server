@@ -29,6 +29,13 @@ async function run() {
           res.json(appionments);
         })
 
+        //Add Appointment
+        app.post('/appionments',async (req,res)=>{
+          const appionment = req.body;
+          const result = await appionmentsCollection.insertOne(appionment);
+          res.json(result);
+        })
+
     }
     finally
     {
