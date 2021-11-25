@@ -48,7 +48,24 @@ async function run() {
           console.log(appionment);
           const result = await appionmentsCollection.insertOne(appionment);
           res.json(result);
-        })
+        });
+
+        //use post to Get Order By Email
+        app.post('/appointments/byEmail',async (req,res)=>{
+            const email = req.body
+            const query = {email:email.email}
+
+            const orders = await appionmentsCollection.find(query).toArray();
+            res.json(orders)
+        });
+      //Appointment Delete
+      app.delete('/appointments/:id',async(req,res)=>{
+        console.log(ObjectId(req.params.id));
+          const id = req.params.id;
+          const query = {_id:ObjectId(id)};
+          const result = await appionmentsCollection.deleteOne(query)
+          res.send(result);
+      })
 
         app.post('/users', async (req, res) => {
             const user = req.body;
@@ -88,6 +105,20 @@ async function run() {
             console.log(data);
             const order = await appionmentsCollection.updateOne(query,updateDoc);
             res.json(order);
+        })
+
+        app.get('/users/:email', async (req, res) => {
+            const email = req.params.email;
+            console.log(email);
+            const query = { email: email };
+
+            const user = await usersCollection.findOne(query);
+            let isAdmin = false;
+            if (user?.role === 'admin') {
+                isAdmin = true;
+            }
+
+            res.json({ admin: isAdmin });
         })
 
     }
